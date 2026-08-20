@@ -60,7 +60,7 @@ jobs:
     name: Validate redistribution policy
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Reject nonfree build configuration
         shell: bash
         run: scripts/check-policy.sh
@@ -75,7 +75,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up MSYS2
         if: runner.os == 'Windows'
