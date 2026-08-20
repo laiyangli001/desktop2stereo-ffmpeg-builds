@@ -27,6 +27,9 @@ clone_exact() {
     echo "Source revision mismatch for $url: $actual != $ref" >&2
     exit 1
   fi
+  if [[ "$fetch_ref" == refs/tags/* ]]; then
+    git -C "$destination" tag -f "${fetch_ref#refs/tags/}" "$ref" >/dev/null
+  fi
 }
 
 prepare_package_metadata() {

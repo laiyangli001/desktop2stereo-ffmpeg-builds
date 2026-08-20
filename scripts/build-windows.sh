@@ -20,7 +20,8 @@ DIST_ROOT="$REPO_ROOT/dist"
 rm -rf "$WORK_ROOT" "$DIST_ROOT"
 mkdir -p "$SOURCE_ROOT" "$PREFIX" "$DIST_ROOT"
 
-clone_exact https://github.com/FFmpeg/FFmpeg.git "$FFMPEG_REF" "$SOURCE_ROOT/ffmpeg"
+clone_exact https://github.com/FFmpeg/FFmpeg.git \
+  "$FFMPEG_REF" "$SOURCE_ROOT/ffmpeg" "$FFMPEG_FETCH_REF"
 clone_exact https://git.videolan.org/git/ffmpeg/nv-codec-headers.git \
   "$NV_CODEC_HEADERS_REF" "$SOURCE_ROOT/nv-codec-headers" "$NV_CODEC_HEADERS_FETCH_REF"
 clone_exact https://github.com/GPUOpen-LibrariesAndSDKs/AMF.git \

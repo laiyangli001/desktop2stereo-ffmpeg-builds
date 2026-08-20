@@ -23,7 +23,8 @@ DIST_ROOT="$REPO_ROOT/dist"
 rm -rf "$WORK_ROOT" "$DIST_ROOT"
 mkdir -p "$SOURCE_ROOT" "$PREFIX" "$DIST_ROOT"
 
-clone_exact https://github.com/FFmpeg/FFmpeg.git "$FFMPEG_REF" "$SOURCE_ROOT/ffmpeg"
+clone_exact https://github.com/FFmpeg/FFmpeg.git \
+  "$FFMPEG_REF" "$SOURCE_ROOT/ffmpeg" "$FFMPEG_FETCH_REF"
 
 export PKG_CONFIG_PATH="$(brew --prefix x264)/lib/pkgconfig:$(brew --prefix x265)/lib/pkgconfig:$(brew --prefix opus)/lib/pkgconfig:$(brew --prefix srt)/lib/pkgconfig"
 EXTRA_CPPFLAGS="-I$(brew --prefix x264)/include -I$(brew --prefix x265)/include -I$(brew --prefix opus)/include -I$(brew --prefix srt)/include"

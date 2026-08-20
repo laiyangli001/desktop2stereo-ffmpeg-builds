@@ -32,7 +32,8 @@ DIST_ROOT="$REPO_ROOT/dist"
 rm -rf "$WORK_ROOT" "$DIST_ROOT"
 mkdir -p "$SOURCE_ROOT" "$PREFIX" "$DEPS_PREFIX" "$DIST_ROOT"
 
-clone_exact https://github.com/FFmpeg/FFmpeg.git "$FFMPEG_REF" "$SOURCE_ROOT/ffmpeg"
+clone_exact https://github.com/FFmpeg/FFmpeg.git \
+  "$FFMPEG_REF" "$SOURCE_ROOT/ffmpeg" "$FFMPEG_FETCH_REF"
 clone_exact https://github.com/KhronosGroup/Vulkan-Headers.git \
   "$VULKAN_HEADERS_REF" "$SOURCE_ROOT/vulkan-headers" "$VULKAN_HEADERS_FETCH_REF"
 
