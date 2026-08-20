@@ -36,6 +36,9 @@ cp -R "$SOURCE_ROOT/vulkan-headers/include/." /mingw64/include/
 
 export PKG_CONFIG_PATH="/mingw64/lib/pkgconfig:/mingw64/share/pkgconfig"
 export PATH="/mingw64/bin:$PATH"
+export CCACHE_DIR="$REPO_ROOT/.ccache"
+mkdir -p "$CCACHE_DIR"
+ccache --max-size=2G
 
 cd "$SOURCE_ROOT/ffmpeg"
 CONFIGURE_ARGS=(
@@ -57,6 +60,7 @@ CONFIGURE_ARGS=(
   --enable-nvenc
   --enable-amf
   --enable-libvpl
+  "--cc=ccache gcc"
   --extra-cflags=-I/mingw64/include
   --extra-ldflags=-L/mingw64/lib
 )
@@ -64,6 +68,7 @@ CONFIGURE_ARGS=(
 ./configure "${CONFIGURE_ARGS[@]}"
 make -j"${NUMBER_OF_PROCESSORS:-4}"
 make install
+ccache --show-stats
 
 "$PREFIX/bin/ffmpeg.exe" -buildconf > "$PACKAGE_ROOT/configure.txt" 2>&1
 prepare_package_metadata "$PACKAGE_ROOT" "$TARGET" "mingw64-gcc"
