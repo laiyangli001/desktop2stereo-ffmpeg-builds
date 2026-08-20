@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "targets": {
+    "Windows-amd64": {
+      "archive": "zip",
+      "required_encoders": [
+        "h264_vulkan",
+        "hevc_vulkan",
+        "h264_nvenc",
+        "hevc_nvenc",
+        "h264_amf",
+        "hevc_amf",
+        "h264_qsv",
+        "hevc_qsv",
+        "libx264",
+        "libx265",
+        "libopus"
+      ],
+      "required_protocols": ["srt"]
+    },
+    "Linux-amd64": {
+      "archive": "tar.xz",
+      "required_encoders": [
+        "h264_vulkan",
+        "hevc_vulkan",
+        "h264_nvenc",
+        "hevc_nvenc",
+        "h264_qsv",
+        "hevc_qsv",
+        "libx264",
+        "libx265",
+        "libopus"
+      ],
+      "required_protocols": ["srt"]
+    },
+    "Linux-arm64": {
+      "archive": "tar.xz",
+      "required_encoders": [
+        "h264_vulkan",
+        "hevc_vulkan",
+        "libx264",
+        "libx265",
+        "libopus"
+      ],
+      "required_protocols": ["srt"]
+    },
+    "Darwin-amd64": {
+      "archive": "zip",
+      "required_encoders": [
+        "h264_videotoolbox",
+        "hevc_videotoolbox",
+        "libx264",
+        "libx265",
+        "libopus"
+      ],
+      "required_protocols": ["srt"]
+    },
+    "Darwin-arm64": {
+      "archive": "zip",
+      "required_encoders": [
+        "h264_videotoolbox",
+        "hevc_videotoolbox",
+        "libx264",
+        "libx265",
+        "libopus"
+      ],
+      "required_protocols": ["srt"]
+    }
+  }
+}

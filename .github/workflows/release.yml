@@ -1,0 +1,44 @@
+name: Release FFmpeg
+
+on:
+  push:
+    tags:
+      - ffmpeg-v*-d2s.*
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+    with:
+      target: all
+
+  release:
+    name: Publish GitHub Release
+    needs: build
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+          merge-multiple: true
+
+      - name: Generate checksums and runtime manifest
+        shell: bash
+        run: |
+          python3 scripts/generate-manifest.py \
+            --assets release-assets \
+            --repository "${{ github.repository }}" \
+            --tag "${{ github.ref_name }}"
+          cd release-assets
+          rm -f ./*.sha256
+          sha256sum ./*.zip ./*.tar.xz runtime-manifest.json > sha256sums.txt
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: gh release create "${{ github.ref_name }}" release-assets/* --generate-notes --verify-tag

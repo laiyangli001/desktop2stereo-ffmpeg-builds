@@ -1,0 +1,122 @@
+name: Build FFmpeg
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Target to build
+        required: true
+        default: Windows-amd64
+        type: choice
+        options:
+          - Windows-amd64
+          - Linux-amd64
+          - Linux-arm64
+          - Darwin-amd64
+          - Darwin-arm64
+          - all
+  workflow_call:
+    inputs:
+      target:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    name: Prepare target matrix
+    runs-on: ubuntu-24.04
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+    steps:
+      - id: matrix
+        name: Select requested targets
+        env:
+          REQUESTED_TARGET: ${{ inputs.target }}
+        shell: bash
+        run: |
+          all_targets='[
+            {"target":"Windows-amd64","os":"windows-2022","script":"scripts/build-windows.sh"},
+            {"target":"Linux-amd64","os":"ubuntu-24.04","script":"scripts/build-linux.sh"},
+            {"target":"Linux-arm64","os":"ubuntu-22.04-arm","script":"scripts/build-linux.sh"},
+            {"target":"Darwin-amd64","os":"macos-15-intel","script":"scripts/build-macos.sh"},
+            {"target":"Darwin-arm64","os":"macos-15","script":"scripts/build-macos.sh"}
+          ]'
+          if [[ "$REQUESTED_TARGET" == "all" ]]; then
+            selected="$all_targets"
+          else
+            selected="$(jq -c --arg target "$REQUESTED_TARGET" \
+              '[.[] | select(.target == $target)]' <<<"$all_targets")"
+          fi
+          if [[ "$(jq 'length' <<<"$selected")" -eq 0 ]]; then
+            echo "Unknown target: $REQUESTED_TARGET" >&2
+            exit 1
+          fi
+          echo "matrix=$(jq -c '{include: .}' <<<"$selected")" >> "$GITHUB_OUTPUT"
+
+  policy:
+    name: Validate redistribution policy
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reject nonfree build configuration
+        shell: bash
+        run: scripts/check-policy.sh
+
+  build:
+    name: ${{ matrix.target }}
+    needs: [prepare, policy]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up MSYS2
+        if: runner.os == 'Windows'
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            base-devel
+            git
+            make
+            diffutils
+            mingw-w64-x86_64-toolchain
+            mingw-w64-x86_64-pkgconf
+            mingw-w64-x86_64-nasm
+            mingw-w64-x86_64-yasm
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-ninja
+            mingw-w64-x86_64-x264
+            mingw-w64-x86_64-x265
+            mingw-w64-x86_64-opus
+            mingw-w64-x86_64-srt
+            mingw-w64-x86_64-openssl
+            mingw-w64-x86_64-vulkan-loader
+            mingw-w64-x86_64-vulkan-headers
+            mingw-w64-x86_64-onevpl
+
+      - name: Build on Windows
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: ${{ matrix.script }} "${{ matrix.target }}"
+
+      - name: Build on Unix
+        if: runner.os != 'Windows'
+        shell: bash
+        run: ${{ matrix.script }} "${{ matrix.target }}"
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ffmpeg-${{ matrix.target }}
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 14
