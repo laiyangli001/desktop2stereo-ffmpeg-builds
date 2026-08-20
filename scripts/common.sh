@@ -15,10 +15,11 @@ clone_exact() {
   local url="$1"
   local ref="$2"
   local destination="$3"
+  local fetch_ref="${4:-$ref}"
 
   git init -q "$destination"
   git -C "$destination" remote add origin "$url"
-  git -C "$destination" fetch -q --depth 1 origin "$ref"
+  git -C "$destination" fetch -q --depth 1 origin "$fetch_ref"
   git -C "$destination" checkout -q --detach FETCH_HEAD
   local actual
   actual="$(git -C "$destination" rev-parse HEAD)"

@@ -34,14 +34,14 @@ mkdir -p "$SOURCE_ROOT" "$PREFIX" "$DEPS_PREFIX" "$DIST_ROOT"
 
 clone_exact https://github.com/FFmpeg/FFmpeg.git "$FFMPEG_REF" "$SOURCE_ROOT/ffmpeg"
 clone_exact https://github.com/KhronosGroup/Vulkan-Headers.git \
-  "$VULKAN_HEADERS_REF" "$SOURCE_ROOT/vulkan-headers"
+  "$VULKAN_HEADERS_REF" "$SOURCE_ROOT/vulkan-headers" "$VULKAN_HEADERS_FETCH_REF"
 
 cp -R "$SOURCE_ROOT/vulkan-headers/include/." "$DEPS_PREFIX/include/"
 if [[ "$TARGET" == "Linux-amd64" ]]; then
   clone_exact https://git.videolan.org/git/ffmpeg/nv-codec-headers.git \
-    "$NV_CODEC_HEADERS_REF" "$SOURCE_ROOT/nv-codec-headers"
+    "$NV_CODEC_HEADERS_REF" "$SOURCE_ROOT/nv-codec-headers" "$NV_CODEC_HEADERS_FETCH_REF"
   clone_exact https://github.com/GPUOpen-LibrariesAndSDKs/AMF.git \
-    "$AMF_HEADERS_REF" "$SOURCE_ROOT/amf"
+    "$AMF_HEADERS_REF" "$SOURCE_ROOT/amf" "$AMF_HEADERS_FETCH_REF"
   make -C "$SOURCE_ROOT/nv-codec-headers" PREFIX="$DEPS_PREFIX" install
   mkdir -p "$DEPS_PREFIX/include/AMF"
   cp -R "$SOURCE_ROOT/amf/amf/public/include/." "$DEPS_PREFIX/include/AMF/"
