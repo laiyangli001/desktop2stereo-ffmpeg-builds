@@ -88,6 +88,7 @@ jobs:
             git
             make
             diffutils
+            p7zip
             mingw-w64-x86_64-toolchain
             mingw-w64-x86_64-ccache
             mingw-w64-x86_64-pkgconf
@@ -103,6 +104,14 @@ jobs:
             mingw-w64-x86_64-vulkan-loader
             mingw-w64-x86_64-vulkan-headers
             mingw-w64-x86_64-onevpl
+
+      - name: Verify Windows build tools
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          command -v gcc
+          command -v ccache
+          command -v 7z
 
       - name: Restore Windows compiler cache
         if: runner.os == 'Windows'
