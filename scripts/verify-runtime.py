@@ -87,8 +87,10 @@ def main() -> None:
     protocols_output = run(executable, "-protocols")
 
     expected_version = metadata["ffmpeg_version"]
-    if not has_word(version_output, expected_version):
-        fail(f"FFmpeg version does not contain {expected_version}")
+    if expected_version not in version_output:
+        fail(
+            f"FFmpeg version does not contain {expected_version}:\n{version_output}"
+        )
     if "--enable-nonfree" in buildconf_output:
         fail("FFmpeg was configured with --enable-nonfree")
 
