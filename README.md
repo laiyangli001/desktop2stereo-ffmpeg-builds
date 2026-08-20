@@ -9,7 +9,7 @@ Reproducible GitHub Actions builds of FFmpeg for Desktop2Stereo. Local developer
 - Linux arm64: Vulkan Video, x264, x265, Opus, SRT
 - macOS amd64/arm64: VideoToolbox, x264, x265, Opus, SRT
 
-The release package contains FFmpeg/ffprobe together with shared FFmpeg libraries, headers, pkg-config metadata, build information, configuration, and licenses. These SDK files are required by the Desktop2Stereo in-process Vulkan encoding bridge.
+The release package contains FFmpeg/ffprobe together with shared FFmpeg libraries, headers, pkg-config metadata, build information, configuration, and licenses. These SDK files are required by the Desktop2Stereo in-process Vulkan encoding bridge. Every GitHub Release also includes a source archive generated from the exact pinned FFmpeg commit used for the binaries.
 
 ## Run a remote build
 
