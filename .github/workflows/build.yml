@@ -133,7 +133,7 @@ jobs:
         run: ${{ matrix.script }} "${{ matrix.target }}"
 
       - name: Upload build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ffmpeg-${{ matrix.target }}
           path: dist/*
